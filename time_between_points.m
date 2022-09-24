@@ -1,4 +1,4 @@
-function [tEnd, p, t] = time_between_points(p1, p2, initTime, grad, tMax)
+function [tEnd, p, t] = time_between_points(p1, p2, initTime, grad, tDur)
 
     % Defaults.
     if nargin < 1
@@ -18,16 +18,16 @@ function [tEnd, p, t] = time_between_points(p1, p2, initTime, grad, tMax)
     end
 
     if nargin < 5
-        tMax = 1e2;
+        tDur = 1e2;
     end
 
     % Try to join p1 to p2, stopping if we arrive.
     opts = odeset('AbsTol',1e-6,'RelTol',1e-6,'Events',@(t,p,varargin) odeabort(t,p,p2,varargin));
-    [t,p,tEnd] = ode15s(@(t,p) grad(p,t), linspace(initTime, initTime + tMax,1e3), p1, opts);
+    [t,p,tEnd] = ode15s(@(t,p) grad(p,t), linspace(initTime, initTime + tDur,1e3), p1, opts);
 
     % If we failed, let the user know, unless an argument has been assigned.
     if isempty(tEnd) & nargout == 0
-        disp(['Cannot go from p1 to p2 within ', num2str(tMax), ' of the initial time.'])
+        disp(['Cannot go from p1 to p2 within ', num2str(tDur), ' of the initial time.'])
     end
 end
 

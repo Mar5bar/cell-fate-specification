@@ -1,4 +1,4 @@
-function path_on_landscape(p1, p2, initTime, grad, tMax)
+function [t, p] = path_on_landscape(p1, p2, initTime, grad, tMax)
 %% PATH_ON_LANDSCAPE(p1, p2, initTime, grad, tMax) will plot an energy
 %% landscape corresponding to the gradient/slope function grad(p,t), where p
 %% is the state and t is the time. Overlaid on the landscape will be a
@@ -28,22 +28,25 @@ function path_on_landscape(p1, p2, initTime, grad, tMax)
 
     % Compute the path and the time taken between the two points.
     [tEnd, p, t] = time_between_points(p1, p2, initTime, grad, tMax);
+    if isempty(tEnd)
+        tEnd = tMax;
+    end
 
     % Use this to define the appropriate ranges for plotting.
-    pRange = [min(p1,p2), max(p1,p2)];
+    pRange = [min([p1;p2;p]), max([p1;p2;p])];
     tRange = [0, tEnd];
 
     % Draw the energy landscape.
-    [h, vals, ps, ts] = draw_landscape(grad, pRange, tRange);
+    [h, vals, ps, ts, landscapeFun] = draw_landscape(grad, pRange, tRange);
 
-    % Form an interpolant object, so that we can track the trajectory on the
-    % energy landscape.
-    [pM, tM] = meshgrid(ps, ts);
-    landscapeFun = griddedInterpolant(pM', tM', vals');
+    % Check if the plot was already being held.
+    origHold = get(gca, 'NextPlot');
     hold on
-
     % Plot the trajectory on the energy landscape.
-    plot3(p, t, landscapeFun(p, t), 'Color', 'black', 'LineWidth', 2)
+    plot3(p, t, landscapeFun(p, t), 'Color', 'red', 'LineWidth', 2)
     view(0,90)
+
+    % Restore the old hold value.
+    set(gca, 'NextPlot', origHold);
 
 end

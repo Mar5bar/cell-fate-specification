@@ -1,4 +1,4 @@
-function [h, vals, ps, ts] = draw_landscape(grad, pRange, tRange)
+function [h, vals, ps, ts, landscapeFun] = draw_landscape(grad, pRange, tRange)
 %% DRAW_LANDSCAPE(grad, pRange, tRange) will plot an energy landscape
 %% corresponding to the gradient/slope function grad(p,t), where p is the
 %% state and t is the time. pRange, tRange are ranges of p and t to draw the
@@ -37,7 +37,7 @@ function [h, vals, ps, ts] = draw_landscape(grad, pRange, tRange)
     vals = cumtrapz(ps, -grad(pM,tM), 2);
 
     % Check if the plot was already being held.
-    origHold = get(gca,'NextPlot');
+    origHold = get(gca, 'NextPlot');
     if length(ts) == 1
         % Plot as a function of p if only one time is specified.
         h = plot(ps, vals, 'Color', 'black');

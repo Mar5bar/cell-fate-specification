@@ -4,7 +4,7 @@ function sols = find_roots(fun, pRange, numSamples)
 %% identifying roots to use as starting guesses for fzero.
     
     if nargin < 3
-        numSamples = 1e2;
+        numSamples = 1e3;
     end
     
     % Generate sample points and evaluate fun on them.
