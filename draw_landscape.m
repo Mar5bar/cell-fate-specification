@@ -81,7 +81,7 @@ function [h, vals, ps, ts] = draw_landscape(grad, pRange, tRange)
         % Plot the approximate location of roots.
         [M, c] = contour(pM, tM, grad(pM, tM), [0,0]);
         delete(c);
-        draw_contours_on_surface(M, landscapeFun);
+        draw_contours_on_surface(M, grad, landscapeFun);
 
         xlabel('$p$')
         ylabel('$t$')
