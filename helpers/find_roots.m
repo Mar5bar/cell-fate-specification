@@ -16,7 +16,7 @@ function sols = find_roots(fun, pRange, numSamples)
     inds = find(sampleVals(1:end-1).*sampleVals(2:end) < 0);
 
     % For each approximate root, use fzero to find it accurately.
-    sols = zeros(length(inds));
+    sols = zeros(1,length(inds));
     for i = 1 : length(inds)
         sols(i) = fzero(fun, midpoints(inds(i)));
     end
