@@ -36,20 +36,40 @@ function [h, vals, ps, ts] = draw_landscape(grad, pRange, tRange)
     % Integrate the negative gradient in p.
     vals = cumtrapz(ps, -grad(pM,tM), 2);
 
+    % Check if the plot was already being held.
+    origHold = get(gca,'NextPlot');
+    hold on
     if length(ts) == 1
         % Plot as a function of p if only one time is specified.
         h = plot(ps, vals, 'Color', 'black');
         xlabel('$p$')
         set(gca,'YTick',[])
+
+        % Form an interpolant to easily plot the steady states.
+        landscapeFun = griddedInterpolant(ps, vals);
+        gradFun = @(x) grad(x, ts(1));
+        stst = find_roots(gradFun, pRange);
+        stability = is_stable(stst, gradFun);
+        scatter(stst(stability),landscapeFun(stst(stability)), 100, 'LineWidth', 2, 'MarkerFaceColor', 'black', 'MarkerEdgeColor', 'black')
+        scatter(stst(~stability),landscapeFun(stst(~stability)), 100, 'LineWidth', 2, 'MarkerFaceColor', 'none', 'MarkerEdgeColor', 'black')
+
     elseif length(ps) == 1
         % Plot as a function of t if only one state is specified.
         h = plot(ts, vals, 'Color', 'black');
         xlabel('$t$')
         set(gca,'YTick',[])
+
+        % Form an interpolant to easily plot the steady states.
+        landscapeFun = griddedInterpolant(ts, vals);
+        gradFun = @(x) grad(ps(1), x);
+        stst = find_roots(gradFun, tRange);
+        stability = is_stable(stst, gradFun);
+        scatter(stst(stability),landscapeFun(stst(stability)), 100, 'LineWidth', 2, 'MarkerFaceColor', 'black', 'MarkerEdgeColor', 'black')
+        scatter(stst(~stability),landscapeFun(stst(~stability)), 100, 'LineWidth', 2, 'MarkerFaceColor', 'none', 'MarkerEdgeColor', 'black')
+
     else
         % Otherwise, construct a surface.
         h = surf(ps, ts, vals, 'LineStyle', 'none');
-        hold on
         % Plot slices of the landscape 10 sampled t in the range.
         for i = round(1:(length(ts)-1)/10:length(ts))
             plot3(ps, ts(i)*ones(size(ps)), vals(i,:), 'Color', 'black')
@@ -63,9 +83,10 @@ function [h, vals, ps, ts] = draw_landscape(grad, pRange, tRange)
         delete(c);
         draw_contours_on_surface(M, landscapeFun);
 
-        hold off
         xlabel('$p$')
         ylabel('$t$')
         set(gca,'ZTick',[])
     end
+    % Restore the old hold value.
+    set(gca,'NextPlot', origHold);
 end

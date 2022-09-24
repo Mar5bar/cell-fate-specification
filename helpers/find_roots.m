@@ -3,6 +3,10 @@ function sols = find_roots(fun, pRange, numSamples)
 %% (p) within the domain pRange by first evaluating at numSamples points,
 %% identifying roots to use as starting guesses for fzero.
     
+    if nargin < 3
+        numSamples = 1e2;
+    end
+    
     % Generate sample points and evaluate fun on them.
     samplePoints = linspace(pRange(1), pRange(2), numSamples);
     midpoints = movmean(samplePoints, 2, 'Endpoints', 'discard');
