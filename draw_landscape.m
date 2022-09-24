@@ -40,10 +40,12 @@ function [h, vals, ps, ts] = draw_landscape(grad, pRange, tRange)
         % Plot as a function of p if only one time is specified.
         h = plot(ps, vals, 'Color', 'black');
         xlabel('$p$')
+        set(gca,'YTick',[])
     elseif length(ps) == 1
         % Plot as a function of t if only one state is specified.
         h = plot(ts, vals, 'Color', 'black');
         xlabel('$t$')
+        set(gca,'YTick',[])
     else
         % Otherwise, construct a surface.
         h = surf(ps, ts, vals, 'LineStyle', 'none');
@@ -64,5 +66,6 @@ function [h, vals, ps, ts] = draw_landscape(grad, pRange, tRange)
         hold off
         xlabel('$p$')
         ylabel('$t$')
+        set(gca,'ZTick',[])
     end
 end
