@@ -38,10 +38,10 @@ function [h, vals, ps, ts] = draw_landscape(grad, pRange, tRange)
 
     % Check if the plot was already being held.
     origHold = get(gca,'NextPlot');
-    hold on
     if length(ts) == 1
         % Plot as a function of p if only one time is specified.
         h = plot(ps, vals, 'Color', 'black');
+        hold on
         xlabel('$p$')
         set(gca,'YTick',[])
 
@@ -56,6 +56,7 @@ function [h, vals, ps, ts] = draw_landscape(grad, pRange, tRange)
     elseif length(ps) == 1
         % Plot as a function of t if only one state is specified.
         h = plot(ts, vals, 'Color', 'black');
+        hold on
         xlabel('$t$')
         set(gca,'YTick',[])
 
@@ -70,6 +71,7 @@ function [h, vals, ps, ts] = draw_landscape(grad, pRange, tRange)
     else
         % Otherwise, construct a surface.
         h = surf(ps, ts, vals, 'LineStyle', 'none');
+        hold on
         % Plot slices of the landscape 10 sampled t in the range.
         for i = round(1:(length(ts)-1)/10:length(ts))
             plot3(ps, ts(i)*ones(size(ps)), vals(i,:), 'Color', 'black')
@@ -88,5 +90,5 @@ function [h, vals, ps, ts] = draw_landscape(grad, pRange, tRange)
         set(gca,'ZTick',[])
     end
     % Restore the old hold value.
-    set(gca,'NextPlot', origHold);
+    set(gca, 'NextPlot', origHold);
 end
